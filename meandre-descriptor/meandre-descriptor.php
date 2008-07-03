@@ -21,9 +21,6 @@ This assumes you are running the Meandre server on the same host as your Wordpre
 
 */
 
-#include_once($_SERVER["DOCUMENT_ROOT"]."/wp-content/plugins/meandre-descriptor/arc/ARC2.php");
-#include_once($_SERVER["DOCUMENT_ROOT"]."/wp-content/plugins/meandre-descriptor/rdfapi-php/api/RdfAPI.php");
-
 define("RDFAPI_INCLUDE_DIR", $_SERVER["DOCUMENT_ROOT"]."/wp-content/plugins/meandre-descriptor/rdfapi-php/api/");
 include_once($_SERVER["DOCUMENT_ROOT"]."/wp-content/plugins/meandre-descriptor/rdfapi-php/api/RdfAPI.php");
 
@@ -86,7 +83,7 @@ function mdr_plugin($content)
 	return (preg_replace_callback(MRD_REGEXP, 'mdr_plugin_callback', $content));
 }
 
-add_filter('the_content', 'mdr_plugin');
-add_filter('comment_text', 'mdr_plugin');
+add_filter('the_content', 'mdr_plugin',0);
+add_filter('comment_text', 'mdr_plugin',0);
 
 ?>
