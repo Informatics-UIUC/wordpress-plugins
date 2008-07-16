@@ -66,6 +66,10 @@ class MeandreTags {
 
 	// Loop Selected Tags from Querystring and Remove Nulls
 	function ParseTagsVal() {
+		if (empty($this->arrTagsVal)) {
+			return false;
+		}
+
 		foreach($this->arrTagsVal as $strThisKey => $strThisTag) {
 			if (empty($strThisTag) or strlen($strThisTag) < 1) {
 				unset($this->arrTagsVal[$strThisKey]);
@@ -116,6 +120,10 @@ class MeandreTags {
 
 	// Assign Weights Differently Based on Filtered Tags
 	function LoadTagWeightsFiltered() {
+		if (empty($this->arrTagsVal)) {
+			return false;
+		}
+		
 		$arrTags = array();
 		$arrTagWeights = array();
 		$arrFlowURIs = array();
@@ -169,6 +177,10 @@ class MeandreTags {
 		$this->strStore = $store;
 		$this->Init();
 
+		if (empty($this->arrTagWeights)) {
+			return false;
+		}
+
 		// Sizes are Font-Size Percentages
 		$intMinSize = 100;
 		$intMaxSize = 250;
@@ -207,7 +219,7 @@ class MeandreTags {
 
 			// Ignore Orphaned Tags, May Not be an Issue
 			if ($intThisCount > 0) {
-				$strOut .= '<li><a href="' . "" . '?Tags[]=' . $strTagsSerial . '&Tags[]=' . $strThisTag . ' ">' . htmlspecialchars($strThisTag) . '</a></li>';
+				$strOut .= '<li><a href="?Tags[]=' . $strTagsSerial . '&Tags[]=' . $strThisTag . '" style="font-size: ' . $intSize . '%">' . htmlspecialchars($strThisTag) . '</a></li>';
 			}
 		}
 		$strOut .= '</ul></div>';
