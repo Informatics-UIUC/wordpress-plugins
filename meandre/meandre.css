@@ -1,0 +1,124 @@
+/******** MeandreTagCloud *********/
+
+#MeandreTagCloud {
+	font-size: .8em;
+}
+
+#MeandreTagCloud ul {
+	list-style-type: none;
+	text-indent: 0px;
+	text-align: left;
+	margin: 0px;
+	padding: 0px;
+
+	border-bottom: 5px solid #cecece;
+	padding-bottom: 16px;
+	margin-top: 8px;
+}
+
+#MeandreTagCloud li {
+	margin: 0px;
+	padding: 0px;
+	background-image: none;
+	display: inline;
+	line-height: 150%;
+}
+
+#MeandreTagCloud li:before {
+	content: "";
+}
+
+#MeandreTagCloud li a,
+#MeandreTagCloud li a:link,
+#MeandreTagCloud li a:visited {
+	padding: 4px 8px 4px 0px;
+}
+
+
+/******** MeandreListSelectedTags *********/
+
+#MeandreListSelectedTags {
+	font-size: .8em;
+}
+
+#MeandreListSelectedTags ul {
+	list-style-type: none;
+	text-indent: 0px;
+	text-align: left;
+	margin: 0px;
+	padding: 0px;
+
+	margin-left: 8px;
+	margin-top: 4px;
+}
+
+#MeandreListSelectedTags li {
+	margin: 0px;
+	padding: 0px;
+	margin-right: 4px;
+
+	display: inline;
+	line-height: 150%;
+}
+
+#MeandreListSelectedTags li:before {
+	content: "";
+}
+
+#MeandreListSelectedTags li a,
+#MeandreListSelectedTags li a:link,
+#MeandreListSelectedTags li a:visited {
+	padding: 4px 10px 4px 10px;
+	background: transparent url('icon_delete.gif') no-repeat left 7px;
+	color: #000;
+}
+
+#MeandreListSelectedTags li a:link:hover,
+#MeandreListSelectedTags li a:visited:hover {
+	color: #aa251a;
+}
+
+
+/******** MeandreListFlows *********/
+
+#MeandreListFlows {
+	font-size: .8em;
+	width: 100%;
+	overflow: auto;
+}
+
+#MeandreListFlows ul {
+	list-style-type: none;
+	text-indent: 0px;
+	text-align: left;
+	margin: 0px;
+	padding: 0px;
+
+	margin-top: 18px;
+}
+
+#MeandreListFlows li {
+	margin: 0px;
+	padding: 0px;
+
+	float: left;
+	width: 120px;
+	margin-right: 28px;
+	margin-bottom: 16px;
+
+	text-align: center;
+}
+
+#MeandreListFlows li:before {
+	content: "";
+}
+
+#MeandreListFlows li img {
+	border: 1px solid #ddd;
+  	width: 100px; 
+	height: 100px;
+}
+
+#MeandreListFlows li div.MeandreListFlowTitle {
+}
+
