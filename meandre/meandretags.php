@@ -202,6 +202,7 @@ class MeandreTags {
 			$strTagsSerial = implode('&Tags[]=', $this->arrTagsVal);
 		}
 		
+		$blnAlt = false;
 		$strOut = '<div id="MeandreTagCloud"><ul>';
 		
 		// Loop Through Tag Weights Array to Write Tag Cloud
@@ -215,11 +216,18 @@ class MeandreTags {
 			
 			// Determine this Font-Size % According to Normalized Increments
 			$intSize = $intMinSize + (($intThisCount - $intMinCount) * $intStep);
-			
 
 			// Ignore Orphaned Tags, May Not be an Issue
 			if ($intThisCount > 0) {
-				$strOut .= '<li><a href="?Tags[]=' . $strTagsSerial . '&Tags[]=' . $strThisTag . '" style="font-size: ' . $intSize . '%">' . htmlspecialchars($strThisTag) . '</a></li>';
+				if ($blnAlt == true) {
+					$strAlt = 'class="AltTag"';
+				}
+				else {
+					$strAlt = '';
+				}
+				$strOut .= '<li ' . $strAlt . '><a href="?Tags[]=' . $strTagsSerial . '&Tags[]=' . $strThisTag . '" style="font-size: ' . $intSize . '%">' . htmlspecialchars($strThisTag) . '</a></li>';
+				
+				if ($blnAlt == true) { $blnAlt = false; } else { $blnAlt = true; }
 			}
 		}
 		$strOut .= '</ul></div>';
