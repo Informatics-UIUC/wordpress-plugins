@@ -31,6 +31,7 @@ class MeandreTags {
 		add_shortcode('MeandreListFlowsByTags' , array(&$this, 'SearchFlowsByTags') );
 		add_shortcode('MeandreListTagsByFlow' , array(&$this, 'ListTagsByURI') );
 		add_shortcode('MeandreListFlowsByFlowTags' , array(&$this, 'RelatedFlowsByFlowTags') );
+		add_shortcode('MeandreNodeBrowser', array(&$this, 'MeandreNodeBrowser'));
 	}
 	
 	function Init() {
@@ -310,6 +311,46 @@ class MeandreTags {
 		
 		$strOut .= '</ul></div>';
 		return $strOut;
+	}
+	
+	function MeandreNodeBrowser($arrParams) {
+		extract(shortcode_atts(array('store' => '', 'tag' => '', 'flow' => ''), $arrParams));
+		
+		if (strlen($store) < 1) {
+			return false;
+		}
+		
+		$this->strStore = $store;
+		
+		if (strlen($tag) < 1 && strlen($flow) < 1) {
+			return false;
+		}
+		
+		$graphuri = 'wp-content/plugins/meandre/graph.php';
+		$roameruri  = 'wp-content/plugins/meandre/RoamerDemo.swf';
+		
+		$strOut = '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+			id="RoamerDemo" width="700" height="500"
+			codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
+			<param name="movie" value="' . $roameruri . '" />
+			<param name="quality" value="high" />
+			<param name="bgcolor" value="#FFFFFF" />
+			<param name="allowScriptAccess" value="sameDomain" />
+			<param name="flashVars" value="Store=' . $store . '&GraphURI=' . $graphuri . '&Tag=' . $tag . '&URI=' . $flow . '"/>
+			<embed src="' . $roameruri . '" quality="high" bgcolor="#FFFFFF"
+				width="700" height="500" name="RoamerDemo" align="middle"
+				play="true"
+				loop="false"
+				quality="high"
+				allowScriptAccess="sameDomain"
+				flashVars = "Store=' . $store . '&GraphURI=' . $graphuri . '&Tag=' . $tag . '&URI=' . $flow . '"
+				type="application/x-shockwave-flash"
+				pluginspage="http://www.adobe.com/go/getflashplayer">
+			</embed>
+	</object>';
+	
+		echo $strOut;
+	
 	}
 
 	// Find All Flows Containing Tag Param, Return as Array of Flow URIs
