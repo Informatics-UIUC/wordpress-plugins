@@ -219,7 +219,7 @@ class MeandreFlow extends Meandre {
 	}
 	
 	function DescribeFlow($arrParams) {
-		extract(shortcode_atts(array('store' => '', 'flow' => ''), $arrParams));
+		extract(shortcode_atts(array('store' => '', 'flow' => '', 'execute' => ''), $arrParams));
 		
 		if (strlen($store) < 1) {
 			return false;
@@ -229,6 +229,10 @@ class MeandreFlow extends Meandre {
 			return false;
 		}
 		
+		if (strlen($execute) < 1) {
+			$execute = 'http://demo.seasr.org:1714/services/execute/flow.txt?uri=' . $flow;
+		}
+
 		$this->strStore = $store;
 		
 		$arrFlow = $this->LoadFlowByURI($flow);
@@ -239,16 +243,22 @@ class MeandreFlow extends Meandre {
 		
 		$strOut = '<div id="MeandreDescribeFlow">';
 		$strOut .= '<div id="Name">' . $arrFlow['?name'] . '</div>';
-		$strOut .= '<div id="Creator">Posted by ' . $arrFlow['?creator'] . '</div>';
-		$strOut .= '<div id="Date">on ' . date('M j Y h:i:sa', strtotime($arrFlow['?date'])) . '</div>';
-		$strOut .= $this->FlowImage();
+		$strOut .= 'Posted by ' . $arrFlow['?creator'];
+		$strOut .= ' on ' . date('M j Y h:i:sa', strtotime($arrFlow['?date']));
+		$strOut .= '<div id="Wrap">';
+		$strOut .= '<div id="Left">';
 		$strOut .= '<div id="Description">' . $arrFlow['?description'] . '</div>';
-		$strOut .= '<span class="Label">Keywords:</span> ' . $this->ListTagsByURI($arrParams) . '</div>';
-		$strOut .= '<div id="MoreInfo">';
-		$strOut .= '<div id="Rights"><span class="Label">Rights:</span> ' . $arrFlow['?rights'] . '</div>';
-		$strOut .= '<div id="URI"><span class="Label">URI:</span> ' . $flow . '</div>';
-		$strOut .= '<div id="Source"><span class="Label">Source:</span> ' . $store . '</div>';
+		$strOut .= '<div id="Keywords"><span class="Label">Keywords:</span> ' . $this->ListTagsByURI($arrParams) . '</div>';
+		$strOut .= '<div id="Execute"><input type="button" value="Execute" onClick="window.open(\'' . $execute . '\');"/></div>';
 		$strOut .= '</div>';
+		$strOut .= $this->FlowImage();
+		$strOut .= '</div>';
+		$strOut .= '<div style="clear: both; height: 1px; overflow: clip;">&nbsp;</div>';
+//		$strOut .= '<div id="MoreInfo">';
+//		$strOut .= '<div id="Rights"><span class="Label">Rights:</span> ' . $arrFlow['?rights'] . '</div>';
+//		$strOut .= '<div id="URI"><span class="Label">URI:</span> ' . $flow . '</div>';
+//		$strOut .= '<div id="Source"><span class="Label">Source:</span> ' . $store . '</div>';
+//		$strOut .= '</div>';
 		$strOut .= '</div>';
 		
 		return $strOut;
@@ -261,7 +271,7 @@ class MeandreFlow extends Meandre {
 		$strImage = $this->FindImageByPostID($intPostID);
 		
 		if (strlen($strImage) > 1) {
-			$strOut = '<div id="FlowImage"><img src="' . $strImage . '" width="550" height="400"></div>';
+			$strOut = '<div id="FlowImage"><img src="' . $strImage . '"/></div>';
 		}
 		return $strOut;
 	}
@@ -344,7 +354,7 @@ class MeandreFlow extends Meandre {
 		
 		arsort($arrFlowWeights);
 		
-		$strOut = '<div id="MeandreListFlows"><ul>';
+		$strOut = '<div id="MeandreListFlows"><span class="Label">Related Flows</span><ul>';
 		
 		foreach($arrFlowWeights as $strThisURI => $intThisWeight) {
 			$arrThisFlow = $arrFlows[$strThisURI];
@@ -531,13 +541,25 @@ class MeandreTags extends Meandre {
 				}
 			}
 			
+			// Ignore Orphaned Tags, May Not be an Issue
+			if ($intThisCount < 1) {
+				continue;
+			}
+			
 			// Determine this Font-Size % According to Normalized Increments
 			$intSize = $intMinSize + (($intThisCount - $intMinCount) * $intStep);
 			
-			// Ignore Orphaned Tags, May Not be an Issue
-			if ($intThisCount > 0) {
-				$strOut .= '<li><a href="' . get_option('home') . '/keyword-cloud/?Tags[]=' . $strTagsSerial . '&Tags[]=' . $strThisTag . '" style="font-size: ' . $intSize . '%;">' . htmlspecialchars($strThisTag) . '</a></li>';
+			// Alternate Tag Class
+			if ($blnAltTag) {
+				$strClass = 'class="AltTag"';
 			}
+			else {
+				$strClass = '';
+			}
+			
+			$strOut .= '<li><a href="' . get_option('home') . '/keyword-cloud/?Tags[]=' . $strTagsSerial . '&Tags[]=' . $strThisTag . '" style="font-size: ' . $intSize . '%;" ' . $strClass . '>' . htmlspecialchars($strThisTag) . '</a></li>';
+		
+			if ($blnAltTag) { $blnAltTag = false; } else { $blnAltTag = true; }
 		}
 		$strOut .= '</ul></div>';
 		return $strOut;
