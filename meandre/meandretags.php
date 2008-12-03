@@ -4,14 +4,18 @@ Plugin Name: WP Meandre
 Plugin URI: 
 Description: Meandre Wordpress ShortTag Functionality
 Author: Wes DeMoney
-Version: 1.1
+Version: 1.2
 Author URI: http://www.infinetsoftware.com
 */
 
 require('include.php');
 
-// If Wordpress, Load Plugins
+// If Wordpress
 if (function_exists('add_action')) {
+	// Install If Needed
+	register_activation_hook(__FILE__,'WPInstallMeandre');
+	
+	// Initialize Plugin
 	add_action('plugins_loaded', create_function('', 'global $objWPMeandre; $objWPMeandre = new WPMeandre();' ));
 }
 
@@ -74,7 +78,7 @@ class Meandre {
 	// Find All Flows Containing Tag Param, Return as Array of Flow URIs
 	function GetFlowsByTag($strInTag) {
 		global $wpdb, $wp_query;
-		$strSQL = 'SELECT FlowID, URI FROM (' . $wpdb->prefix . 'flowkeywords LEFT JOIN ' . $wpdb->prefix . 'flows ON ' . $wpdb->prefix . 'flowkeywords.FlowID = ' . $wpdb->prefix . 'flows.ID) LEFT JOIN ' . $wpdb->prefix . 'keywords ON ' . $wpdb->prefix . 'flowkeywords.KeywordID = ' . $wpdb->prefix . 'keywords.ID WHERE (' . $wpdb->prefix . 'keywords.Keyword = \'' . $strInTag . '\')';
+		$strSQL = 'SELECT FlowID, URI FROM (' . $wpdb->prefix . 'flowkeywords LEFT JOIN ' . $wpdb->prefix . 'flows ON ' . $wpdb->prefix . 'flowkeywords.FlowID = ' . $wpdb->prefix . 'flows.ID) LEFT JOIN ' . $wpdb->prefix . 'keywords ON ' . $wpdb->prefix . 'flowkeywords.KeywordID = ' . $wpdb->prefix . 'keywords.ID WHERE (' . $wpdb->prefix . 'keywords.Keyword = \'' . $wpdb->escape($strInTag) . '\')';
 		$results = $wpdb->get_results($strSQL, OBJECT);
 		
 		if (!$results) {
@@ -98,7 +102,7 @@ class Meandre {
 		// Wrap All Tags in Single Quotes
 		$arrTags = array();
 		foreach ($arrInTags as $strThisTag) {
-			$arrTags[] = "'" . $strThisTag . "'";
+			$arrTags[] = "'" . $wpdb->escape($strThisTag) . "'";
 		}
 		
 		$strWhere = implode(",", $arrTags);
@@ -121,7 +125,7 @@ class Meandre {
 	// Find All Tags by URI Param, Return as Array of Tags
 	function GetTagsByFlow($strInURI) {
 		global $wpdb, $wp_query;
-		$strSQL = 'SELECT Keyword FROM (' . $wpdb->prefix . 'flowkeywords LEFT JOIN ' . $wpdb->prefix . 'flows ON ' . $wpdb->prefix . 'flowkeywords.FlowID = ' . $wpdb->prefix . 'flows.ID) LEFT JOIN ' . $wpdb->prefix . 'keywords ON ' . $wpdb->prefix . 'flowkeywords.KeywordID = ' . $wpdb->prefix . 'keywords.ID WHERE (' . $wpdb->prefix . 'flows.URI = \'' . $strInURI . '\')';
+		$strSQL = 'SELECT Keyword FROM (' . $wpdb->prefix . 'flowkeywords LEFT JOIN ' . $wpdb->prefix . 'flows ON ' . $wpdb->prefix . 'flowkeywords.FlowID = ' . $wpdb->prefix . 'flows.ID) LEFT JOIN ' . $wpdb->prefix . 'keywords ON ' . $wpdb->prefix . 'flowkeywords.KeywordID = ' . $wpdb->prefix . 'keywords.ID WHERE (' . $wpdb->prefix . 'flows.URI = \'' . $wpdb->escape($strInURI) . '\')';
 		$results = $wpdb->get_results($strSQL, OBJECT);
 		
 		if (!$results) {
@@ -181,7 +185,7 @@ class Meandre {
 			return false;
 		}
 		
-		$strSQL = 'SELECT post_id, meta_key, meta_value FROM ' . $wpdb->postmeta . ' WHERE (meta_value = \'' . mysql_real_escape_string($strInURI) . '\')';
+		$strSQL = 'SELECT post_id, meta_key, meta_value FROM ' . $wpdb->postmeta . ' WHERE (meta_value = \'' . $wpdb->escape($strInURI) . '\')';
 		$results = $wpdb->get_results($strSQL, OBJECT);
 		
 		if ($results) {
@@ -642,6 +646,35 @@ class MeandreTags extends Meandre {
 		return $strOut;
 	}
 
+}
+
+function WPInstallMeandre() {
+	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+	global $wpdb;
+	
+	
+	if ($wpdb->get_var('show tables like \'' . $wpdb->prefix . 'flows\'') != $wpdb->prefix . 'flows') {
+
+		$strSQL = 'CREATE TABLE ' . $wpdb->prefix . 'flowkeywords (
+			FlowID int(11) NOT NULL,
+			KeywordID int(11) NOT NULL
+			);';
+		dbDelta($strSQL);
+
+		$strSQL = 'CREATE TABLE ' . $wpdb->prefix . 'flows (
+			ID int(11) NOT NULL auto_increment,
+			URI varchar(255) NOT NULL,
+			PRIMARY KEY  (ID)
+			);';
+		dbDelta($strSQL);
+		
+		$strSQL = 'CREATE TABLE ' . $wpdb->prefix . 'keywords (
+			ID int(11) NOT NULL auto_increment,
+			Keyword varchar(50) NOT NULL,
+			PRIMARY KEY  (ID)
+			);';
+		dbDelta($strSQL);
+   }
 }
 
 ?>
