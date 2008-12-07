@@ -140,7 +140,7 @@ function InsertFlowKeyword($intInFlowID, $intInKeyID) {
 
 function ClearFlowKeywords() {
 	global $objDB, $strPre;
-	$strSQL = 'DELETE FROM ' . $strPre . 'flowkeywords';
+	$strSQL = 'DELETE * FROM ' . $strPre . 'flowkeywords';
 	$objDB->Query($strSQL);
 }
 

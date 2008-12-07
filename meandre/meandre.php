@@ -115,7 +115,7 @@ class Meandre {
 		foreach ($results as $arrThisRow) {
 			$arrTags[] = $arrThisRow->Keyword;
 		}
-		return $arrTags;
+		return array_unique($arrTags);
 	}
 	
 	// Find All Tags, Return as Array of Tags
