@@ -78,42 +78,41 @@ class MeandreTags extends Meandre {
 		$arrFlowURIs = array();
 		
 		// Loop Through Selected Tags
-//		foreach ($this->arrTagsVal as $strThisKey => $strThisTag) {
-			
-			$arrSomeTags = $this->GetFlowsByTags($this->arrTagsVal);
+		$arrSomeTags = $this->GetFlowsByTags($this->arrTagsVal);
 
-			// Find Flows that Match Each Tag
-			foreach ($arrSomeTags as $strThisFlowURI) {
-				// Ignore Duplicate Flows
-				if (in_array($strThisFlowURI, $arrFlowURIs)) {
-					continue;
-				}
-				
-				// Find Tags By Each Flow and Filter Flows that Dont Have ALL the Selected Tags
-				$arrThisFlowTags = $this->GetTagsByFlow($strThisFlowURI);
-				foreach ($this->arrTagsVal as $strThisTag) {
-					if (!in_array($strThisTag, $arrThisFlowTags)) {
-						continue 2;
-					}
-				}
-				
-				// Flow Processed, Add to List of Flows
-				$arrFlowURIs[] = $strThisFlowURI;
-				
-				// Loop Through Processed Flows Tags to Increment Tag Weights
-				foreach ($arrThisFlowTags as $strThisFlowTag) {
-					// Tag not Counted, Set Count at 1
-					if (!in_array($strThisFlowTag, $arrTags)) {
-						$arrTags[] = $strThisFlowTag;
-						$this->arrTagWeights[$strThisFlowTag] = 1;
-					}
-					// Increment Tag Count
-					else {
-						$this->arrTagWeights[$strThisFlowTag]++;
-					}
-				}			
+		// Find Flows that Match Each Tag
+		foreach ($arrSomeTags as $strThisFlowURI) {
+			// Ignore Duplicate Flows
+			if (in_array($strThisFlowURI, $arrFlowURIs)) {
+				continue;
 			}
-//		}
+			
+			// Find Tags By Each Flow and Filter Flows that Dont Have ALL the Selected Tags
+			$arrThisFlowTags = $this->GetTagsByFlow($strThisFlowURI);
+			foreach ($this->arrTagsVal as $strThisTag) {
+				if (!in_array($strThisTag, $arrThisFlowTags)) {
+					continue 2;
+				}
+			}
+			
+			// Flow Processed, Add to List of Flows
+			$arrFlowURIs[] = $strThisFlowURI;
+			
+			// Loop Through Processed Flows Tags to Increment Tag Weights
+			foreach ($arrThisFlowTags as $strThisFlowTag) {
+				// Tag not Counted, Set Count at 1
+				if (!in_array($strThisFlowTag, $arrTags)) {
+					$arrTags[] = $strThisFlowTag;
+					$this->arrTagWeights[$strThisFlowTag] = 1;
+				}
+				// Increment Tag Count
+				else {
+					$this->arrTagWeights[$strThisFlowTag]++;
+				}
+			}			
+		}
+		// Sort Alphabetically
+		ksort($this->arrTagWeights);
 	}
 
 
