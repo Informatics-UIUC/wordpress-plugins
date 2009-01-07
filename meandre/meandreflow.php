@@ -155,7 +155,7 @@ class MeandreFlow extends Meandre {
 				if (strlen($strThisImage) < 1) {
 					$strThisImage = 'wp-content/plugins/meandre/flow.gif';
 				}
-				$strThisViewFlowURI = get_option('home') . '/?p=' . $intThisPostID;
+				$strThisViewFlowURI = get_permalink($intThisPostID);
 			}
 			
 			$strOut .= '<li><a href="' . $strThisViewFlowURI . '"><img src="' . $strThisImage . '" border="0"/><div class="MeandreListFlowTitle">' . htmlspecialchars($arrThisFlow['?name']) . '</div></a></li>';

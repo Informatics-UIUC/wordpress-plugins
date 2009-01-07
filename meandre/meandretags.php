@@ -244,7 +244,8 @@ class MeandreTags extends Meandre {
 				if (strlen($strThisImage) < 1) {
 					$strThisImage = 'wp-content/plugins/meandre/flow.gif';
 				}
-				$strOut .= '<li><a href="' . get_option('home') . '/?p=' . $intThisPostID . '"><img src="' . $strThisImage . '" border="0"/><div class="MeandreListFlowTitle">' . htmlspecialchars($arrThisFlow['?name']) . '</div></a></li>';
+				$strThisViewFlowURI = get_permalink($intThisPostID);
+				$strOut .= '<li><a href="' . $strThisViewFlowURI . '"><img src="' . $strThisImage . '" border="0"/><div class="MeandreListFlowTitle">' . htmlspecialchars($arrThisFlow['?name']) . '</div></a></li>';
 				}
 			}
 		//}
