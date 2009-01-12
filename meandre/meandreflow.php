@@ -17,6 +17,7 @@ class MeandreFlow extends Meandre {
 		$strStoreURI = get_post_meta($post->ID, 'StoreURI', true);
 		$strFlowURI = get_post_meta($post->ID, 'FlowURI', true);
 		$strExecURI = get_post_meta($post->ID, 'ExecuteURI', true);
+		$strMeandreServer = get_post_meta($post->ID, 'MeandreServer', true);
 		
 		if (strlen($strStoreURI) < 1) {
 			return false;
@@ -27,7 +28,7 @@ class MeandreFlow extends Meandre {
 		}
 		
 		if (strlen($strExecURI) < 1) {
-			$strExecURI = 'http://demo.seasr.org:1714/services/execute/flow.txt?uri=' . $strFlowURI;
+			$strExecURI = get_bloginfo('home') . '/wp-content/plugins/meandre/execute.php?MeandreServer=' . urlencode($strMeandreServer) . '&FlowURI=' . urlencode($strFlowURI);
 		}
 		
 		$arrFlow = $this->LoadFlowByURI($strFlowURI);
@@ -153,7 +154,7 @@ class MeandreFlow extends Meandre {
 			if (is_numeric($intThisPostID)) {
 				$strThisImage = $this->FindImageByPostID($intThisPostID);
 				if (strlen($strThisImage) < 1) {
-					$strThisImage = 'wp-content/plugins/meandre/flow.gif';
+					$strThisImage = get_bloginfo('home') . '/wp-content/plugins/meandre/flow.gif';
 				}
 				$strThisViewFlowURI = get_permalink($intThisPostID);
 			}
