@@ -8,7 +8,11 @@ if (empty($strURI)) {
 	return false;
 }
 
-GetWebUI();
+$strResp = GetWebUI();
+
+if ($strResp) {
+	echo $strResp;
+}
 
 function GetWebUI() {
 	global $strURI;
@@ -16,6 +20,7 @@ function GetWebUI() {
 	$strResponse = CurlIt($strURI, 'admin', 'admin');
 
 	if ($strResponse) {
+		return $strResponse;
 		$arrLines = explode("\n", $strResponse);
 		foreach ($arrLines as $strThisLine) {
 			$arrThisPair = explode(' = ', $strThisLine);
@@ -29,11 +34,12 @@ function GetWebUI() {
 				$intWebUIPort = $strThisVal;
 			}
 		}
-		header('Location: http://' . $strWebUIHost . ':' . $intWebUIPort);
-		return false;
+		if ($strWebUIHost != 'localhost') {
+			return 'http://' . $strWebUIHost . ':' . $intWebUIPort;
+		}
 	}
 
+	return false;
 }
 
 ?>
-<html><head><script language="Javascript">window.setTimeout("location.reload()", 3000);</script></head><body>Loading...</body></html>
