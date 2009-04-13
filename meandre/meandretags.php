@@ -210,10 +210,6 @@ class MeandreTags extends Meandre {
 		}
 		
 		$strOut = '<div id="MeandreListFlows"><ul>';
-		
-		// Loop through selected tags
-		//foreach ($this->arrTagsVal as $strThisKey => $strThisTag) {
-			// Find flows with this selected tag
 			
 			$arrSomeFlows = array();
 			$arrSomeFlows = $this->GetFlowsByTags($this->arrTagsVal);
@@ -233,11 +229,19 @@ class MeandreTags extends Meandre {
 					}
 				}
 				
+				// Find Post ID, Skip If Not Published
+				$intThisPostID = $this->FindPostIDByURI($strThisFlowURI);
+				$objThisPost = get_post($intThisPostID, OBJECT);
+				$strThisPostStatus = $objThisPost->post_status;
+				$strThisPostTitle = $objThisPost->post_title;
+				
+				if ($strThisPostStatus != 'publish') {
+					continue;
+				}
+				
 				// Add flow to index
 				$arrFlowURIs[] = $strThisFlowURI;
-				$arrThisFlow = $this->LoadFlowByURI($strThisFlowURI);
-				
-				$intThisPostID = $this->FindPostIDByURI($strThisFlowURI);
+				//$arrThisFlow = $this->LoadFlowByURI($strThisFlowURI);
 				
 				if (is_numeric($intThisPostID)) {
 				$strThisImage = $this->FindImageByPostID($intThisPostID);
@@ -245,10 +249,9 @@ class MeandreTags extends Meandre {
 					$strThisImage = 'wp-content/plugins/meandre/flow.gif';
 				}
 				$strThisViewFlowURI = get_permalink($intThisPostID);
-				$strOut .= '<li><a href="' . $strThisViewFlowURI . '"><img src="' . $strThisImage . '" border="0"/><div class="MeandreListFlowTitle">' . htmlspecialchars($arrThisFlow['?name']) . '</div></a></li>';
+				$strOut .= '<li><a href="' . $strThisViewFlowURI . '"><img src="' . $strThisImage . '" border="0"/><div class="MeandreListFlowTitle">' . htmlspecialchars($strThisPostTitle) . '</div></a></li>';
 				}
 			}
-		//}
 		
 		$strOut .= '</ul></div>';
 		return $strOut;

@@ -4,7 +4,7 @@ Plugin Name: WP Meandre
 Plugin URI: 
 Description: Meandre Wordpress ShortTag Functionality
 Author: Wes DeMoney
-Version: 1.2
+Version: 1.3
 Author URI: http://www.infinetsoftware.com
 */
 
@@ -12,11 +12,12 @@ require_once('include.php');
 require_once('meandre.php');
 require_once('meandreflow.php');
 require_once('meandretags.php');
+require_once(dirname(__FILE__) . '/update.php');
 
 // If Wordpress
 if (function_exists('add_action')) {
 	// Install If Needed
-	register_activation_hook(__FILE__,'WPInstallMeandre');
+	register_activation_hook(__FILE__, 'WPInstallMeandre');
 	
 	// Initialize Plugin
 	add_action('plugins_loaded', 'InitMeandre');
@@ -31,16 +32,63 @@ function InitMeandre() {
 	global $objMeandreFlow;
 	$objMeandreTags = new MeandreTags();
 	$objMeandreFlow = new MeandreFlow();
+	
+	// Update Flow Data From RDF When Published/Updated
+	add_action('publish_page', 'MeandreUpdateFlow');
+	add_action('publish_post', 'MeandreUpdateFlow');
+	
+	// Use Our Own Stylesheet
+	add_action('wp_head', 'MeandreStylesheet');
 }
 
 function InitMeandreTab() {
-	add_options_page('Update Meandre', 'Update Meandre', 8, __FILE__, 'WriteAdminTab');
+	add_options_page('WP Quiz Lander', 'Meandre', 8, 'meandre/admintab.php');
 }
+
+function MeandreStylesheet() {
+	echo '<link rel="stylesheet" type="text/css" href="' . get_option('home') . '/wp-content/plugins/meandre/styles.css' . '"/>';
+}
+
+function MeandreUpdateFlow($intInPostID) {
+	$strStoreURI = get_post_meta($intInPostID, 'StoreURI', true);
+	$strFlowURI = get_post_meta($intInPostID, 'FlowURI', true);
+
+	if (strlen($strStoreURI) < 1 || strlen($strFlowURI) < 1) {
+		return false;
+	}
 	
-function WriteAdminTab() {
-//	$strOut = '<input type="button" onClick="window.open(\'../wp-content/plugins/meandre/update.php\');" value="Update Database"/>';
-	$strOut = '<iframe src="../wp-content/plugins/meandre/update.php" width="300" height="300" frameborder="0"></iframe>';
-	echo $strOut;
+	// Load Flow Models and Recordset of URIs/Tags
+	LoadModels($strStoreURI);
+	$objTagsRS = LoadTags();
+	
+	if (!$objTagsRS) {
+		return false;
+	}
+
+	// Flush Existing Flow URI/Tag Mappings
+	ClearFlowKeywordsByFlow($strFlowURI);
+	
+	$objTagsRS->MoveFirst();
+
+	// Loop URI/Tags
+	while ($arrThisRow = $objTagsRS->getRow()) {
+		$strThisTag = $arrThisRow['?tag'];
+		$strThisFlow = $arrThisRow['?uri'];
+		
+		// Ignore Other Flows That May Have Been Found in This Store
+		if ($strThisFlow != $strFlowURI) {
+			continue;
+		}
+		
+		// Create Flow and Tag Records as Needed
+		$intFlowID = InsertFlow($strThisFlow);
+		$intKeyID = InsertTag($strThisTag);
+		
+		// Map Flows to Tags
+		if ($intFlowID && $intKeyID) {
+			InsertFlowKeyword($intFlowID, $intKeyID);
+		}
+	}
 }
 
 function WPInstallMeandre() {

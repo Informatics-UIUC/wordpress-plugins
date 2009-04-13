@@ -163,7 +163,7 @@ class Meandre {
 			return false;
 		}
 		
-		$strSQL = 'SELECT post_id, meta_key, meta_value FROM ' . $wpdb->postmeta . ' WHERE (meta_value = \'' . $wpdb->escape($strInURI) . '\')';
+		$strSQL = 'SELECT post_id FROM ' . $wpdb->postmeta . ' WHERE (meta_key = \'FlowURI\' AND meta_value = \'' . $wpdb->escape($strInURI) . '\')';
 		$results = $wpdb->get_results($strSQL, OBJECT);
 		
 		if ($results) {

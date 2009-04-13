@@ -18,6 +18,7 @@ class MeandreFlow extends Meandre {
 		$strFlowURI = get_post_meta($post->ID, 'FlowURI', true);
 		$strExecURI = get_post_meta($post->ID, 'ExecuteURI', true);
 		$strMeandreServer = get_post_meta($post->ID, 'MeandreServer', true);
+		$strCustomFlowURI = get_post_meta($post->ID, 'CustomFlowURI', true);
 		
 		if (strlen($strStoreURI) < 1) {
 			return false;
@@ -29,6 +30,10 @@ class MeandreFlow extends Meandre {
 		
 		if (strlen($strExecURI) < 1) {
 			$strExecURI = get_bloginfo('home') . '/wp-content/plugins/meandre/execute.php?MeandreServer=' . urlencode($strMeandreServer) . '&FlowURI=' . urlencode($strFlowURI);
+		}
+		
+		if (strlen($strCustomFlowURI) > 0) {
+			$strCustomExecURI = get_bloginfo('home') . '/wp-content/plugins/meandre/execute.php?MeandreServer=' . urlencode($strMeandreServer) . '&FlowURI=' . urlencode($strCustomFlowURI);
 		}
 		
 		$arrFlow = $this->LoadFlowByURI($strFlowURI);
@@ -46,15 +51,19 @@ class MeandreFlow extends Meandre {
 		$strOut .= '<div id="Description">' . $arrFlow['?description'] . '</div>';
 		$strOut .= '<div id="Keywords"><span class="Label">Keywords:</span> ' . $this->ListTagsByURI($strFlowURI) . '</div>';
 		$strOut .= '<div id="Execute"><input type="button" value="Execute" onClick="window.open(\'' . $strExecURI . '\');"/></div>';
+		
+		if (strlen($strCustomExecURI) > 0) {
+			$strOut .= '<div id="Execute"><input type="button" value="Custom Execute" onClick="window.open(\'' . $strCustomExecURI . '\');"/></div>';
+		}
+		
 		$strOut .= '</div>';
 		$strOut .= $this->FlowImage();
 		$strOut .= '</div>';
 		$strOut .= '<div style="clear: both; height: 1px; overflow: clip;">&nbsp;</div>';
-//		$strOut .= '<div id="MoreInfo">';
-//		$strOut .= '<div id="Rights"><span class="Label">Rights:</span> ' . $arrFlow['?rights'] . '</div>';
-//		$strOut .= '<div id="URI"><span class="Label">URI:</span> ' . $flow . '</div>';
-//		$strOut .= '<div id="Source"><span class="Label">Source:</span> ' . $store . '</div>';
-//		$strOut .= '</div>';
+		$strOut .= '<div id="MoreInfo">';
+		$strOut .= '<div id="FlowURI"><span class="Label">Flow URI:</span> ' . $strFlowURI . '</div>';
+		$strOut .= '<div id="Location"><span class="Label">Location URI:</span> ' . $strStoreURI . '</div>';
+		$strOut .= '</div>';
 		$strOut .= '</div>';
 		
 		return $strOut;
