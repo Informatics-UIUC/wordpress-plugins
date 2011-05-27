@@ -8,38 +8,18 @@ if (empty($strURI)) {
 	return false;
 }
 
-$strResp = GetWebUI();
+$result = GetWebUI();
 
-if ($strResp) {
-	echo $strResp;
+if (!$result) {
+  return false;
 }
+
+echo $result;
 
 function GetWebUI() {
 	global $strURI;
 	
-	$strResponse = CurlIt($strURI, 'admin', 'admin');
-
-	if ($strResponse) {
-		return $strResponse;
-		$arrLines = explode("\n", $strResponse);
-		foreach ($arrLines as $strThisLine) {
-			$arrThisPair = explode(' = ', $strThisLine);
-			$strThisVar = trim($arrThisPair[0]);
-			$strThisVal = trim($arrThisPair[1]);
-			
-			if ($strThisVar == 'hostname') {
-				$strWebUIHost = $strThisVal;
-			}
-			if ($strThisVar == 'port') {
-				$intWebUIPort = $strThisVal;
-			}
-		}
-		if ($strWebUIHost != 'localhost') {
-			return 'http://' . $strWebUIHost . ':' . $intWebUIPort;
-		}
-	}
-
-	return false;
+	return CurlIt($strURI, 'admin', 'admin');
 }
 
 ?>

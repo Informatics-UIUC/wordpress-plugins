@@ -20,7 +20,10 @@ $strConsoleAPI = $strMeandreServer . 'services/jobs/job_console.txt';
 <TITLE>Execute Flow</TITLE>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/prototype/1.6.0.2/prototype.js"></script>
 <script language="Javascript">
-var intTries = 0;
+var intTries = 1;
+var maxTries = 20;
+var delayBetweenTries = 2000;  // total timeout = maxTries * delayBetweenTries
+var consoleRefresh = 10000;
 var strWebUI = '';
 // Call Execute Flow AJAX Request
 function ExecFlow() {
@@ -29,26 +32,26 @@ function ExecFlow() {
 	new Ajax.Request(strURL, { method: 'get'});
 }
 
-// Load Web UI Service, Try Until Ready (up to 30 seconds)
 function LoadWebUI() {
 	var strWebUIAPI = '<?php echo $strWebUIAPI; ?>';
 	var strURL = 'execute_webui.php?URI=' + escape(strWebUIAPI);
 	new Ajax.Request(strURL, { method: 'get', onComplete: function(transport) {
 		var strResp = transport.responseText;
-		if (strResp.length > 1) {
+		WebUI.document.getElementById("count").innerHTML = "[" + intTries + "/" + maxTries + "]";
+		if (strResp.length > 0) {
 			// Evaluate JSON - Returned as Array so use Index 0
 			var objJSON = strResp.evalJSON();
 			
 			// Retry if localhost, still not ready
 			if (objJSON[0].hostname == 'localhost') {
 				intTries++;
-				window.setTimeout("LoadWebUI()", 2000);
+				window.setTimeout("LoadWebUI()", delayBetweenTries);
 				return false;
 			}
 			
 			// Find WebUI Address and Redirect Top Frame
 			strWebUI = 'http://' + objJSON[0].hostname + ':' + objJSON[0].port;
-			window.frames[0].location.href = strWebUI;
+			WebUI.location.href = strWebUI;
 			
 			// Find Flow Execution Instance and Feed to Flow Console Proxy, Display in Lower Frame
 			strFlowInst = objJSON[0].uri;
@@ -57,9 +60,12 @@ function LoadWebUI() {
 		else {
 			// Not Ready, Try Again
 			intTries++;
-			if (intTries < 15) {
-				window.setTimeout("LoadWebUI()", 2000);
-			}
+			if (intTries <= maxTries) {
+				window.setTimeout("LoadWebUI()", delayBetweenTries);
+			} else {
+				WebUI.document.getElementById("msg").innerHTML = "Timed out - flow execution failed!";
+				FlowConsole.document.getElementById("msg").innerHTML = "Timed out - flow execution failed!";
+                        }
 		}
   }});
 }
@@ -67,7 +73,8 @@ function LoadWebUI() {
 // Feed Flow Instance to Console Proxy, Display in Lower Frame
 function ShowConsole() {
 	var strURL = '<?php echo $strConsoleAPI; ?>?uri=' + strFlowInst;
-	window.frames[1].location.href = 'execute_console.php?URI=' + escape(strURL);
+	FlowConsole.location.href = 'execute_console.php?URI=' + escape(strURL);
+        window.setTimeout("ShowConsole()", consoleRefresh);
 }
 
 ExecFlow();
@@ -76,11 +83,11 @@ LoadWebUI();
 </script>
 </head>
   <FRAMESET rows="80%, 20%">
-      <FRAME name="WebUI" src=""/>
-	  <FRAME name="FlowConsole" src=""/>
+      <FRAME name="WebUI" src="loading.html"/>
+      <FRAME name="FlowConsole" src="loading.html"/>
   </FRAMESET>
   <NOFRAMES>
-
+  <BODY>Sorry, your browser does not support frames!</BODY>
   </NOFRAMES>
 </FRAMESET>
 </HTML>

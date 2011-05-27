@@ -42,7 +42,7 @@ function InitMeandre() {
 }
 
 function InitMeandreTab() {
-	add_options_page('WP Quiz Lander', 'Meandre', 8, 'meandre/admintab.php');
+	add_options_page('Meandre Options', 'Meandre', 8, 'meandre/admintab.php');
 }
 
 function MeandreStylesheet() {

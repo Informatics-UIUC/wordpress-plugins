@@ -8,13 +8,18 @@ if (empty($strURI)) {
 	return false;
 }
 
-ExecuteFlow();
+$result = ExecuteFlow();
+
+if (!$result) {
+  return false;
+}
+
+echo $result;
 
 function ExecuteFlow() {
 	global $strURI;
 	
-	$strResponse = CurlIt($strURI, 'admin', 'admin');
-	echo $strResponse;
+	return CurlIt($strURI, 'admin', 'admin');
 }
 
 ?>
