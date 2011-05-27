@@ -11,7 +11,7 @@ if (empty($strMeandreServer)) {
 
 $strExecAPI = $strMeandreServer . 'services/execute/flow.txt?uri=' . $strFlowURI . '&token=' . $strToken;
 $strWebUIAPI = $strMeandreServer .  'services/execute/uri_flow.json?token=' . $strToken;
-$strConsoleAPI = $strMeandreServer . 'services/jobs/job_console.txt';
+$strConsoleAPI = $strMeandreServer . 'services/jobs/job_console.json';
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN"
    "http://www.w3.org/TR/html4/frameset.dtd">

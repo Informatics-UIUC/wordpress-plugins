@@ -8,20 +8,30 @@ if (empty($strURI)) {
 	return false;
 }
 
-function WriteFlowConsole() {
+$consoleOutput = GetFlowConsole();
+if (!$consoleOutput) {
+	return false;
+}
+
+function GetFlowConsole() {
 	global $strURI;
 	
-	$strResponse = CurlIt($strURI, 'admin', 'admin');
-	echo $strResponse;
+	$result = CurlIt($strURI, 'admin', 'admin');
+	if (!$result) {
+		return false;
+	}
+
+	$json = json_decode($result);
+	return $json[0]->console;
 }
 
 ?>
 <html>
 
-<body>
+<body onload="window.scrollTo(0,document['body'].offsetHeight);">
 
 <pre>
-<?php WriteFlowConsole(); ?>
+<?php echo $consoleOutput; ?>
 </pre>
 
 </body>
