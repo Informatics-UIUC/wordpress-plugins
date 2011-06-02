@@ -19,6 +19,7 @@ class MeandreFlow extends Meandre {
 		$strExecURI = get_post_meta($post->ID, 'ExecuteURI', true);
 		$strMeandreServer = get_post_meta($post->ID, 'MeandreServer', true);
 		$strCustomFlowURI = get_post_meta($post->ID, 'CustomFlowURI', true);
+                $strCustomExecURI = '';
 		
 		if (strlen($strStoreURI) < 1) {
 			return false;

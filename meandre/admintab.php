@@ -2,11 +2,15 @@
 
 $strAction = $_POST['Action'];
 
-if (strtoupper($strAction) == 'UPDATE') {
-	UpdateOptions();
-}
-else {
+if (empty($strAction)) {
 	LoadOptions();
+} else {
+	if ($strAction == 'UpdateStoreURIs') {
+		UpdateOptions();
+	}
+	if ($strAction == 'UpdateFlows') {
+		require('updatetab.php');
+	}
 }
 
 WritePage();
@@ -37,7 +41,7 @@ function WritePage() {
 <h3>Repository URIs</h3>
 
 <form method="post" action="options-general.php?page=meandre/admintab.php">
-<input type="hidden" name="Action" value="Update"/>
+<input type="hidden" name="Action" value="UpdateStoreURIs"/>
 <table class="form-table">
   <tr>
     <th scope="row"><label for="RepositoryURIs">Repository URIs:</label></th>
@@ -52,8 +56,8 @@ function WritePage() {
 
 <h3>Update Flows</h3>
 
-<form method="post" action="options-general.php?page=meandre/updatetab.php">
-
+<form method="post" action="options-general.php?page=meandre/admintab.php">
+<input type="hidden" name="Action" value="UpdateFlows"/>
 <p>
 The following button will update the current Meandre data on this blog using page/post meta data and the above Repositories.<br/>
 <input type="submit" value="Update Flows..." class="button-primary"/>

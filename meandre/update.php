@@ -295,7 +295,7 @@ function ClearFlowKeywords() {
 // Clear FlowID/TagID Mappings By FlowURI
 function ClearFlowKeywordsByFlow($strInFlowURI) {
 	global $wpdb;
-	$strSQL = 'DELETE ' . $wpdb->prefix . 'flowkeywords.* FROM ' . $wpdb->prefix . 'flowkeywords FK LEFT JOIN ' . $wpdb->prefix . 'flows F ON FK.FlowID = F.ID WHERE (URI = \'' . FixString($strInFlowURI) . '\')';
+	$strSQL = 'DELETE ' . $wpdb->prefix . 'flowkeywords FROM ' . $wpdb->prefix . 'flowkeywords FK LEFT JOIN ' . $wpdb->prefix . 'flows F ON FK.FlowID = F.ID WHERE (URI = \'' . FixString($strInFlowURI) . '\')';
 	$wpdb->query($strSQL);
 }
 

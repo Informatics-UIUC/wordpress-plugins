@@ -95,7 +95,6 @@ function WPInstallMeandre() {
 	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 	global $wpdb;
 	
-	
 	if ($wpdb->get_var('show tables like \'' . $wpdb->prefix . 'flows\'') != $wpdb->prefix . 'flows') {
 
 		$strSQL = 'CREATE TABLE ' . $wpdb->prefix . 'flowkeywords (
