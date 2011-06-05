@@ -60,7 +60,8 @@ function ListMissingPosts() {
 
 <h3>Missing Pages</h3>
 
-<form method="post" action="options-general.php?page=meandre/missingtab.php">
+<form method="post" action="options-general.php?page=meandre/admintab.php">
+<input type="hidden" name="Action" value="CreateMissingFlowPages"/>
 <table class="widefat">
   <thead>
   <tr>

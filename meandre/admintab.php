@@ -12,6 +12,10 @@ if (empty($strAction)) {
 		require('updatetab.php');
 		return;
 	}
+        if ($strAction == 'CreateMissingFlowPages') {
+                require('missingtab.php');
+                return;
+        }
 }
 
 WritePage();
