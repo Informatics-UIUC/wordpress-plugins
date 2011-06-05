@@ -6,7 +6,7 @@ $strFlowURI = $_GET['FlowURI'];
 $strToken = time();
 
 if (empty($strMeandreServer)) {
-	$strMeandreServer = 'http://demo.seasr.org:1714/';
+	$strMeandreServer = 'http://leovip024.ncsa.uiuc.edu:1714/';
 }
 
 $strExecAPI = $strMeandreServer . 'services/execute/flow.txt?uri=' . $strFlowURI . '&token=' . $strToken;
@@ -45,7 +45,12 @@ function LoadWebUI() {
 			// Retry if localhost, still not ready
 			if (objJSON[0].hostname == 'localhost') {
 				intTries++;
-				window.setTimeout("LoadWebUI()", delayBetweenTries);
+				if (intTries <= maxTries) {
+                               		 window.setTimeout("LoadWebUI()", delayBetweenTries);
+                        	} else {
+                                	WebUI.document.getElementById("msg").innerHTML = "Timed out - flow execution failed!";
+                                	FlowConsole.document.getElementById("msg").innerHTML = "Timed out - flow execution failed!";
+                        	}
 				return false;
 			}
 			

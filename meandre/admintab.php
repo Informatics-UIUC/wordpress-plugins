@@ -10,6 +10,7 @@ if (empty($strAction)) {
 	}
 	if ($strAction == 'UpdateFlows') {
 		require('updatetab.php');
+		return;
 	}
 }
 
