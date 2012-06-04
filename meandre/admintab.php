@@ -1,6 +1,9 @@
 <?php
 
-$strAction = $_POST['Action'];
+$strAction = "";
+
+if ( isset($_POST['Action']) )
+	$strAction = $_POST['Action'];
 
 if (empty($strAction)) {
 	LoadOptions();

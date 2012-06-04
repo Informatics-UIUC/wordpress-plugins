@@ -170,6 +170,7 @@ function LoadTags() {
 		return false;
 	}
 
+
 	$strQ = 'prefix meandre:  <http://www.meandre.org/ontology/> 
 	prefix xsd:     <http://www.w3.org/2001/XMLSchema#> 
 	prefix dc:      <http://purl.org/dc/elements/1.1/> 
@@ -183,6 +184,7 @@ function LoadTags() {
 
 	$result = $objModel->sparqlQuery($strQ);
 	$objTagsRS = new SparqlRecordSet($result);
+
 	return $objTagsRS;
 }
 
@@ -295,7 +297,7 @@ function ClearFlowKeywords() {
 // Clear FlowID/TagID Mappings By FlowURI
 function ClearFlowKeywordsByFlow($strInFlowURI) {
 	global $wpdb;
-	$strSQL = 'DELETE ' . $wpdb->prefix . 'flowkeywords FROM ' . $wpdb->prefix . 'flowkeywords FK LEFT JOIN ' . $wpdb->prefix . 'flows F ON FK.FlowID = F.ID WHERE (URI = \'' . FixString($strInFlowURI) . '\')';
+	$strSQL = 'DELETE FROM ' . $wpdb->prefix . 'flowkeywords WHERE FlowID IN (SELECT ID FROM ' . $wpdb->prefix . 'flows WHERE URI = \'' . FixString($strInFlowURI) . '\')';
 	$wpdb->query($strSQL);
 }
 

@@ -10,7 +10,8 @@ class MeandreTags extends Meandre {
 		if (!function_exists('add_shortcode')) return;
 		
 		$this->blnTagsLoaded = false;
-		$this->arrTagsVal = $_GET['Tags'];
+		if (array_key_exists('Tags', $_GET))
+			$this->arrTagsVal = $_GET['Tags'];
 		
 		add_shortcode('MeandreTagCloud', array(&$this, 'ListTags'));
 		add_shortcode('MeandreListSelectedTags', array(&$this, 'ListSelectedTags'));
@@ -142,6 +143,8 @@ class MeandreTags extends Meandre {
 		}
 		
 		$strOut = '<div id="MeandreTagCloud"><ul>';
+
+		$blnAltTag = false;
 		
 		// Loop Through Tag Weights Array to Write Tag Cloud
 		foreach ($this->arrTagWeights as $strThisTag => $intThisCount) {

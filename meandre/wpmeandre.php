@@ -26,10 +26,10 @@ if (function_exists('add_action')) {
 	add_action('admin_menu', 'InitMeandreTab');
 }
 
-
 function InitMeandre() {
 	global $objMeandreTags;
 	global $objMeandreFlow;
+
 	$objMeandreTags = new MeandreTags();
 	$objMeandreFlow = new MeandreFlow();
 	
@@ -60,21 +60,21 @@ function MeandreUpdateFlow($intInPostID) {
 	// Load Flow Models and Recordset of URIs/Tags
 	LoadModels($strStoreURI);
 	$objTagsRS = LoadTags();
-	
+
 	if (!$objTagsRS) {
 		return false;
 	}
 
 	// Flush Existing Flow URI/Tag Mappings
 	ClearFlowKeywordsByFlow($strFlowURI);
-	
+
 	$objTagsRS->MoveFirst();
 
 	// Loop URI/Tags
 	while ($arrThisRow = $objTagsRS->getRow()) {
 		$strThisTag = $arrThisRow['?tag'];
 		$strThisFlow = $arrThisRow['?uri'];
-		
+
 		// Ignore Other Flows That May Have Been Found in This Store
 		if ($strThisFlow != $strFlowURI) {
 			continue;

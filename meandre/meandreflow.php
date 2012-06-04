@@ -13,14 +13,14 @@ class MeandreFlow extends Meandre {
 	
 	function DescribeFlow() {
 		global $post;
-		
-		$strStoreURI = get_post_meta($post->ID, 'StoreURI', true);
-		$strFlowURI = get_post_meta($post->ID, 'FlowURI', true);
+
+		$strStoreURI = get_post_meta($post->ID, 'StoreURI', true);   	// required
+		$strFlowURI = get_post_meta($post->ID, 'FlowURI', true);	// required
 		$strExecURI = get_post_meta($post->ID, 'ExecuteURI', true);
 		$strMeandreServer = get_post_meta($post->ID, 'MeandreServer', true);
 		$strCustomFlowURI = get_post_meta($post->ID, 'CustomFlowURI', true);
                 $strCustomExecURI = '';
-		
+
 		if (strlen($strStoreURI) < 1) {
 			return false;
 		}
@@ -36,13 +36,14 @@ class MeandreFlow extends Meandre {
 		if (strlen($strCustomFlowURI) > 0) {
 			$strCustomExecURI = get_bloginfo('home') . '/wp-content/plugins/meandre/execute.php?MeandreServer=' . urlencode($strMeandreServer) . '&FlowURI=' . urlencode($strCustomFlowURI);
 		}
-		
+	
 		$arrFlow = $this->LoadFlowByURI($strFlowURI);
 		
 		if (!$arrFlow) {
+			_log("meandre: DescribeFlow(meandreflow.php): Could not get flow metadata for " . $strFlowURI);
 			return false;
 		}
-		
+
 		$strOut = '<div id="MeandreDescribeFlow">';
 		$strOut .= '<div id="Name">' . $arrFlow['?name'] . '</div>';
 		$strOut .= 'Posted by ' . $arrFlow['?creator'];
@@ -81,18 +82,13 @@ class MeandreFlow extends Meandre {
 		}
 		return $strOut;
 	}
-	
-	// Write Tags Associated with a Flow by URI
-	function ListTagsByURI($strInFlowURI) {		
-		if (strlen($strInFlowURI) < 1) {
-			return false;
-		}
-		
-		$arrTags = $this->GetTagsByFlow($strInFlowURI);
 
+	function GetTagsHtmlFor($arrTags) {
 		if (empty($arrTags) || !is_array($arrTags)) {
 			return false;
 		}
+
+		_log("meandre: GetTagsHtmlFor(meandreflow.php): tags = " . implode(",", $arrTags));
 		
 		$strOut = '<div id="TagsByFlow"><ul>';
 		
@@ -117,6 +113,17 @@ class MeandreFlow extends Meandre {
 		return $strOut;
 	}
 	
+	// Write Tags Associated with a Flow by URI
+	function ListTagsByURI($strInFlowURI) {		
+		if (strlen($strInFlowURI) < 1) {
+			return false;
+		}
+		
+		$arrTags = $this->GetTagsByFlow($strInFlowURI);
+
+		return $this->GetTagsHtmlFor($arrTags);
+	}
+	
 	// Write Flows Related to a Flow by the Flow's Associated Tags
 	function RelatedFlowsByFlowTags() {
 		global $post;
@@ -136,7 +143,7 @@ class MeandreFlow extends Meandre {
 		foreach ($arrTags as $strThisTag) {
 			$arrFlowsByTag = $this->GetFlowsByTag($strThisTag);
 			foreach ($arrFlowsByTag as $strThisFlowURI) {
-				if ($strThisFlowURI == $flow) {
+				if ($strThisFlowURI == $strFlowURI) {
 					continue;
 				}
 				if (array_key_exists($strThisFlowURI, $arrFlowWeights)) {
