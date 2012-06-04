@@ -6,7 +6,7 @@ $strFlowURI = $_GET['FlowURI'];
 $strToken = time();
 
 if (empty($strMeandreServer)) {
-	$strMeandreServer = 'http://leovip024.ncsa.uiuc.edu:1714/';
+	$strMeandreServer = 'http://leovip033.ncsa.uiuc.edu:1714/';
 }
 
 $strExecAPI = $strMeandreServer . 'services/execute/flow.txt?uri=' . $strFlowURI . '&token=' . $strToken;
@@ -21,7 +21,7 @@ $strConsoleAPI = $strMeandreServer . 'services/jobs/job_console.json';
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/prototype/1.6.0.2/prototype.js"></script>
 <script language="Javascript">
 var intTries = 1;
-var maxTries = 20;
+var maxTries = 30;
 var delayBetweenTries = 2000;  // total timeout = maxTries * delayBetweenTries
 var consoleRefresh = 10000;
 var strWebUI = '';
